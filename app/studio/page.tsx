@@ -1,7 +1,5 @@
-import Studio from './Studio'
+import {redirect} from 'next/navigation'
 
-export const dynamic = 'force-static'
-
-export {metadata, viewport} from 'next-sanity/studio'
-
-export default Studio
+export default function StudioPage() {
+  redirect('https://gaywin-walters-portfolio.sanity.studio')
+}

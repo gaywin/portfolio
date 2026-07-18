@@ -1,111 +1,58 @@
 import Link from "next/link";
-import { Reveal } from "./reveal";
 import { caseStudies } from "./work/case-studies";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
 export default function Home() {
-  return (
-    <main>
-      <a className="skip-link" href="#content">Skip to content</a>
-      <header className="site-header shell">
-        <Link className="wordmark" href="/" aria-label="Gaywin Walters, home">GW<span>.</span></Link>
-        <nav aria-label="Main navigation">
-          <a href="#work">Work</a>
-          <a href="#about">About</a>
-          <a className="nav-contact" href="mailto:hello@gaywinwalters.com">Let’s talk <Arrow /></a>
-        </nav>
+  return <main className="refined-home">
+    <a className="skip-link" href="#main-content">Skip to content</a>
+    <section className="dark-shell hero-ref" id="main-content">
+      <header className="ref-header page-width">
+        <Link className="ref-logo" href="/" aria-label="Gaywin Walters home">gaywin<span>.design</span></Link>
+        <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#services">Capabilities</a><a href="#about">About</a><Link href="/resume">Résumé</Link><a href="mailto:hello@gaywinwalters.com">Contact</a></nav>
       </header>
-
-      <div id="content">
-        <section className="hero shell" aria-labelledby="hero-title">
-          <p className="eyebrow hero-kicker">Senior product designer · Cape Town</p>
-          <h1 id="hero-title">I turn complex products into <em>clear, scalable</em> experiences.</h1>
-          <div className="hero-footer">
-            <p>From zero-to-one concepts to platforms used by hundreds of thousands of people—connecting product strategy, systems thinking and hands-on craft.</p>
-            <a className="circle-link" href="#work" aria-label="Explore selected work"><span>Explore<br/>work</span><b aria-hidden="true">↓</b></a>
-          </div>
-        </section>
-
-        <Reveal className="metrics shell" as="section" aria-label="Experience highlights">
-          <div><strong>10+</strong><span>years in product<br/>and UX</span></div>
-          <div><strong>20+</strong><span>years shaping<br/>digital experiences</span></div>
-          <div><strong>100K+</strong><span>people reached by<br/>products designed</span></div>
-          <div><strong>0→1</strong><span>concepts through<br/>to scaled systems</span></div>
-        </Reveal>
-
-        <section className="work shell" id="work" aria-labelledby="work-title">
-          <Reveal className="section-heading">
-            <p className="eyebrow">01 — Selected work</p>
-            <h2 id="work-title">Outcomes, not<br/><em>ornament.</em></h2>
-          </Reveal>
-          <div className="project-list">
-            {caseStudies.map((study, index) => (
-              <Reveal className="project" key={study.slug}>
-                <Link className="project-visual" data-theme={study.theme} href={`/work/${study.slug}`} aria-label={`Read ${study.title} case study: ${study.outcome}`}>
-                  <span className="project-index">0{index + 1}</span>
-                  <div className="ui-art" aria-hidden="true">
-                    <span className="ui-top" />
-                    <strong>{study.artLabel}</strong>
-                    <span className="ui-copy" />
-                    <span className="ui-copy short" />
-                    <i>{study.artStat}</i>
-                  </div>
-                  <span className="project-arrow"><Arrow /></span>
-                </Link>
-                <div className="project-copy">
-                  <p className="eyebrow">{study.sector}</p>
-                  <h3><Link href={`/work/${study.slug}`}>{study.outcome}</Link></h3>
-                  <div><span>{study.title}</span><span>{study.year}</span></div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section className="capabilities shell" aria-labelledby="cap-title">
-          <Reveal className="cap-intro">
-            <p className="eyebrow">02 — Capabilities</p>
-            <h2 id="cap-title">Strategy with sleeves<br/><em>rolled up.</em></h2>
-          </Reveal>
-          <div className="cap-list">
-            {[
-              ["Product direction", "Framing ambiguous opportunities, aligning teams and turning customer and business signals into a focused product path."],
-              ["Experience design", "Making complex workflows feel coherent through research, interaction design, prototyping and thoughtful content."],
-              ["Systems at scale", "Building design systems, operating models and shared standards that help product teams move with consistency."],
-              ["AI-assisted products", "Using AI as both a product capability and a force multiplier—from responsible concepts to rapid, testable prototypes."],
-            ].map(([title, copy], index) => (
-              <Reveal className="cap-row" key={title}>
-                <span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section className="about shell" id="about" aria-labelledby="about-title">
-          <Reveal className="about-label"><p className="eyebrow">03 — About</p></Reveal>
-          <Reveal className="about-copy">
-            <h2 id="about-title">Designer, builder and systems thinker.</h2>
-            <p className="lead">I’m Gaywin Walters, a senior product designer based in Cape Town. For more than two decades, I’ve worked where design, technology and business meet.</p>
-            <div className="about-columns">
-              <p>I started in digital design and front-end development before moving deeper into product and UX. That technical foundation still shapes how I work: I understand the systems beneath the interface and design with delivery in mind.</p>
-              <p>Today, I help teams find clarity in complex spaces—setting direction, bringing people together, building scalable systems and staying close enough to the craft to make the details count.</p>
-            </div>
-          </Reveal>
-        </section>
-
-        <section className="contact" aria-labelledby="contact-title">
-          <div className="shell contact-inner">
-            <p className="eyebrow">Available for the right next challenge</p>
-            <h2 id="contact-title">Let’s make something<br/><em>matter.</em></h2>
-            <div className="contact-actions">
-              <a className="button light" href="mailto:hello@gaywinwalters.com">Start a conversation <Arrow /></a>
-              <Link className="button text" href="/resume">View résumé <Arrow /></Link>
-            </div>
-            <footer><span>© {new Date().getFullYear()} Gaywin Walters</span><span>Cape Town · South Africa</span><a href="#content">Back to top ↑</a></footer>
-          </div>
-        </section>
+      <div className="hero-grid" aria-hidden="true" />
+      <div className="page-width ref-hero-content">
+        <div className="discipline-list"><span>Product Strategy</span><i/> <span>UX Design</span><i/> <span>Design Systems</span></div>
+        <h1>Hi, I’m Gaywin <b className="hero-avatar" aria-label="Gaywin Walters">GW</b> a senior product designer making complex products <em>clear and scalable.</em></h1>
+        <div className="ref-actions"><a className="blue-button" href="mailto:hello@gaywinwalters.com">Let’s talk</a><a className="text-arrow" href="#work">View selected work <span>↓</span></a></div>
       </div>
-    </main>
-  );
+      <div className="proof-strip page-width" aria-label="Career highlights">
+        <div><strong>20+</strong><span>years in digital<br/>design & technology</span></div>
+        <div><strong>10+</strong><span>years in product<br/>and UX</span></div>
+        <div><strong>100K+</strong><span>people reached<br/>by products</span></div>
+        <div><strong>0→1</strong><span>concepts to<br/>scaled systems</span></div>
+      </div>
+    </section>
+
+    <section className="featured-ref" id="work">
+      <div className="page-width">
+        <p className="ref-label">Featured work</p><h2>Design that gets results</h2>
+        <div className="ref-projects">
+          {caseStudies.map((study,index)=><Link className={`ref-project ${index % 2 ? "image-left" : ""}`} href={`/work/${study.slug}`} key={study.slug}>
+            <div className="project-info"><h3>{study.outcome}</h3><p>{study.overview}</p><div className="card-result"><strong>{study.artStat}</strong><span>{study.results[0]}</span></div></div>
+            <div className="project-thumb" data-theme={study.theme}>
+              <div className="thumb-window"><div className="thumb-bar"><i/><i/><i/></div><div className="thumb-body"><small>{study.artLabel}</small><b>{study.title}</b><span/><span className="short"/><em>{index===0?"LIVE":index===1?"PORTFOLIO":"REPORTING"}</em></div></div>
+            </div>
+          </Link>)}
+        </div>
+        <Link className="more-link" href="/work/gameon-sportsbozza">Explore the first case study <Arrow /></Link>
+      </div>
+    </section>
+
+    <section className="services-ref dark-shell" id="services">
+      <div className="page-width"><div className="section-lead"><div><p className="ref-label">Capabilities</p><h2>Strategy with sleeves rolled up</h2></div><p>I help product teams move from ambiguity to a clear direction, then stay close enough to the craft to make the details count.</p></div>
+        <div className="service-grid">
+          {[["01","Product direction","Opportunity framing, product strategy, zero-to-one definition and cross-functional alignment."],["02","Experience design","Research, interaction design, prototyping and clear workflows for complex products."],["03","Systems at scale","Design systems, operating models and standards that improve quality and speed."],["04","AI-assisted product development","Responsible AI concepts and rapid, testable prototypes that turn emerging capability into useful products."]].map(([n,title,copy])=><article key={n}><span>{n}</span><h3>{title}</h3><p>{copy}</p><ul>{title==="Product direction"?<><li>Product strategy</li><li>Discovery & framing</li><li>Team alignment</li></>:title==="Experience design"?<><li>UX & interaction design</li><li>Prototyping</li><li>Validation</li></>:title==="Systems at scale"?<><li>Design systems</li><li>Governance</li><li>Design operations</li></>:<><li>AI product strategy</li><li>Rapid prototyping</li><li>Human-centred AI</li></>}</ul></article>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="results-ref dark-shell"><div className="page-width"><p className="ref-label">Outcome-oriented approach</p><div className="results-heading"><h2>Design is only useful when it moves something forward.</h2><p>Every engagement is different, but the standard stays the same: make the customer experience clearer and the product more valuable.</p></div><div className="result-rail"><div><strong>100K+</strong><span>sports fans reached</span></div><div><strong>3</strong><span>complex product ecosystems</span></div><div><strong>20+</strong><span>years connecting design and code</span></div><div><strong>1</strong><span>clear source of truth</span></div></div></div></section>
+
+    <section className="about-ref" id="about"><div className="page-width"><p className="ref-label">About</p><div className="about-ref-grid"><h2>Designer, builder and systems thinker.</h2><div><p className="about-big">I’m a senior product designer based in Cape Town, working where design, technology and business meet.</p><p>My foundation in front-end development means I understand the systems beneath the interface and design with delivery in mind. I help teams find clarity in complex spaces, align around a direction and build products that can scale.</p><Link className="more-link" href="/resume">View résumé <Arrow /></Link></div></div></div></section>
+
+    <section className="cta-ref dark-shell"><div className="page-width"><p className="ref-label">Let’s work together</p><h2>Have a complex product that needs clarity?</h2><a className="blue-button" href="mailto:hello@gaywinwalters.com">Get in touch <Arrow /></a></div></section>
+    <footer className="ref-footer dark-shell"><div className="page-width"><Link className="ref-logo" href="/">gaywin<span>.design</span></Link><div><a href="#work">Work</a><a href="#services">Capabilities</a><Link href="/resume">Résumé</Link><a href="mailto:hello@gaywinwalters.com">Contact</a></div><p>Senior product designer · Cape Town<br/>© {new Date().getFullYear()} Gaywin Walters</p></div></footer>
+  </main>;
 }

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { caseStudies, getCaseStudy } from "../case-studies";
+import { getCaseStudies, getCaseStudy } from "../../../sanity/content";
 
-export function generateStaticParams(){return caseStudies.map(({slug})=>({slug}));}
-export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const study=getCaseStudy((await params).slug);return study?{title:`${study.title} — Gaywin Walters`,description:study.outcome}:{};}
+export async function generateStaticParams(){return (await getCaseStudies()).map(({slug})=>({slug}));}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const study=await getCaseStudy((await params).slug);return study?{title:`${study.title} — Gaywin Walters`,description:study.outcome}:{};}
 
 export default async function CaseStudyPage({params}:{params:Promise<{slug:string}>}){
- const study=getCaseStudy((await params).slug); if(!study)notFound();
+ const caseStudies=await getCaseStudies();
+ const requestedSlug=(await params).slug;
+ const study=caseStudies.find(({slug})=>slug===requestedSlug); if(!study)notFound();
  const index=caseStudies.findIndex(({slug})=>slug===study.slug); const next=caseStudies[(index+1)%caseStudies.length];
  return <main className="case-ref-page">
   <a className="skip-link" href="#case-main">Skip to case study</a>
@@ -15,9 +17,9 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
    <header className="ref-header page-width"><Link className="ref-logo" href="/">gaywin<span>.design</span></Link><nav aria-label="Case study navigation"><Link href="/#work">Work</Link><Link href="/resume">Résumé</Link><a href="mailto:hello@gaywinwalters.com">Contact</a></nav></header>
    <div className="page-width case-title"><p>{study.sector} · {study.year}</p><h1>{study.outcome}</h1></div>
   </div>
-  <div className="page-width case-hero-ref" data-theme={study.theme} aria-label={`${study.title} product overview`}>
-   <div className="case-screen"><div className="screen-chrome"><i/><i/><i/><span>{study.title}</span></div><div className="screen-layout"><aside><b>GW</b><span/><span/><span/><span/></aside><div><small>{study.artLabel}</small><h2>{study.artStat}</h2><p>{study.overview}</p><div className="screen-panels"><i/><i/><i/></div></div></div></div>
-   <div className="phone-screen"><span>{study.artLabel}</span><b>{study.artStat}</b><i/><i/><i/></div>
+  <div className={`page-width case-hero-ref${study.heroImageUrl?' has-cms-image':''}`} data-theme={study.theme} aria-label={`${study.title} product overview`}>
+   {study.heroImageUrl?<img className="cms-case-image" src={study.heroImageUrl} alt={study.heroImageAlt||`${study.title} product interface`} />:<><div className="case-screen"><div className="screen-chrome"><i/><i/><i/><span>{study.title}</span></div><div className="screen-layout"><aside><b>GW</b><span/><span/><span/><span/></aside><div><small>{study.artLabel}</small><h2>{study.artStat}</h2><p>{study.overview}</p><div className="screen-panels"><i/><i/><i/></div></div></div></div>
+   <div className="phone-screen"><span>{study.artLabel}</span><b>{study.artStat}</b><i/><i/><i/></div></>}
   </div>
 
   <article id="case-main" className="case-ref-content">

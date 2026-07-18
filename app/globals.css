@@ -45,6 +45,7 @@ h1 em, h2 em { font-family:Georgia, 'Times New Roman', serif; font-weight:400; l
 [data-theme="violet"] { --theme:#6f4cff; --theme-ink:#171225; --theme-soft:#d8d0ff; }
 [data-theme="orange"] { --theme:#ff5c35; --theme-ink:#2c160e; --theme-soft:#ffd6c7; }
 .project-visual, .case-art, .system-swatch { background:var(--theme); }
+.cms-project-image{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}.case-hero-ref.has-cms-image{padding:0}.case-hero-ref.has-cms-image::before{display:none}.cms-case-image{width:100%;height:100%;object-fit:cover;display:block}
 .project-visual::before { content:""; position:absolute; width:52%; aspect-ratio:1; border-radius:50%; border:1px solid color-mix(in srgb, var(--theme-ink) 22%, transparent); transform:translate(-42%,-22%); }
 .project-visual::after { content:""; position:absolute; width:52%; aspect-ratio:1; border-radius:50%; background:var(--theme-soft); transform:translate(45%,31%); z-index:-1; }
 .project-index { position:absolute; top:28px; left:32px; font:600 12px var(--font-geist-mono), monospace; }

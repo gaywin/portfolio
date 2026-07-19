@@ -23,9 +23,9 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
   </div>
 
   <article id="case-main" className="case-ref-content">
-   <section className="page-width case-summary"><h2>Summary</h2><div className="summary-grid"><div className="summary-main"><h3>Mission</h3><p>{study.challenge}</p><h3>My contribution</h3><p>{study.overview} {study.strategy}</p></div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>
+   <section className="page-width case-summary"><h2>Summary</h2><div className="summary-grid"><div className="summary-main"><h3>Mission</h3><p>{study.mission||study.overview}</p><h3>Challenge</h3><p>{study.challenge}</p><h3>My contribution</h3><p>{study.overview} {study.strategy}</p></div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>
 
-   <section className="impact-ref"><div className="page-width"><div className="impact-intro"><p className="ref-label">Impact</p><h2>{study.outcome}</h2></div><div className="impact-grid">{study.results.map((result,i)=>{const bits=result.match(/^([\dK+→]+|one|more than [\d,]+)\s*(.*)$/i);return <div key={result}><strong>{bits?.[1]||["01","02","03"][i]}</strong><span>{bits?.[2]||result}</span></div>})}</div></div></section>
+   <ImpactSection study={study}/>
 
    <section className="page-width story-ref">
     <div className="story-block"><h2>Finding the right problem</h2><p className="story-lead">A complex product becomes tractable when the team shares a clear view of the customer’s real job.</p><div className="story-copy"><div><h3>Challenge</h3><p>{study.challenge}</p></div><div><h3>Customer insight</h3><p>{study.insight}</p></div></div></div>
@@ -33,9 +33,13 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
     <div className="story-block narrow"><h2>Turning insight into direction</h2><p>{study.strategy}</p><h3>Key design decisions</h3><ol>{study.decisions.map((decision,i)=><li key={decision}><span>0{i+1}</span><p>{decision}</p></li>)}</ol></div>
     <CaseVisual theme={study.theme} type="wireframes" label="Product structure and key flows" />
     <div className="story-block split-story"><div><p className="ref-label">Design system</p><h2>Building for consistency and scale</h2></div><p>{study.system}</p></div>
-    <CaseVisual theme={study.theme} type="system" label="Reusable product system" />
+    {study.designSystemImageUrl?<ContentImage src={study.designSystemImageUrl} alt={study.designSystemImageAlt||`${study.title} design system`} label="Reusable product system"/>:<CaseVisual theme={study.theme} type="system" label="Reusable product system" />}
     <div className="story-block split-story"><div><p className="ref-label">Validation</p><h2>Learning before committing</h2></div><p>{study.validation}</p></div>
-    <div className="validation-board" data-theme={study.theme}><div><span>01</span><b>Frame</b></div><i>→</i><div><span>02</span><b>Prototype</b></div><i>→</i><div><span>03</span><b>Validate</b></div><i>→</i><div><span>04</span><b>Refine</b></div></div>
+    {study.validationImageUrl?<ContentImage src={study.validationImageUrl} alt={study.validationImageAlt||`${study.title} validation process`} label="Learning before committing"/>:<div className="validation-board" data-theme={study.theme}><div><span>01</span><b>Frame</b></div><i>→</i><div><span>02</span><b>Prototype</b></div><i>→</i><div><span>03</span><b>Validate</b></div><i>→</i><div><span>04</span><b>Refine</b></div></div>}
+    {study.contentSections?.map((section,index)=><section className="flexible-story" key={section._key||`${section.heading}-${index}`}>
+      {(section.heading||section.text)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.text&&<p>{section.text}</p>}</div>}
+      {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
+    </section>)}
     <div className="story-block reflection"><p className="ref-label">Reflection</p><blockquote>“{study.reflection}”</blockquote></div>
    </section>
   </article>
@@ -43,6 +47,15 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
   <section className="case-cta"><div className="page-width"><p className="ref-label">Have a complex product that needs clarity?</p><h2>Let’s make the next outcome matter.</h2><a className="blue-button" href="mailto:hello@gaywinwalters.com">Get in touch ↗</a></div></section>
   <section className="more-work"><div className="page-width"><p className="ref-label">Next project</p><Link href={`/work/${next.slug}`}><span><b>{next.title}</b><small>{next.sector}</small></span><strong>{next.outcome}</strong><i>↗</i></Link><Link className="all-work" href="/#work">View all work</Link></div></section>
  </main>;
+}
+
+function ImpactSection({study}:{study:Awaited<ReturnType<typeof getCaseStudy>> & {title:string}}){
+ const metrics=study.impactMetrics?.length?study.impactMetrics:study.results.map((result,i)=>{const bits=result.match(/^([\dK+→]+|one|more than [\d,]+)\s*(.*)$/i);return {value:bits?.[1]||String(i+1).padStart(2,'0'),label:bits?.[2]||result}})
+ return <section className="impact-ref"><div className="page-width"><div className="impact-intro"><h2>{study.impactHeading||'Impact'}</h2><p>{study.impactDescription||study.outcome}</p></div><div className="impact-grid">{metrics.map((metric,i)=><div key={`${metric.value}-${i}`}><strong>{metric.value}</strong><span>{metric.label}</span></div>)}</div></div></section>
+}
+
+function ContentImage({src,alt,label}:{src:string;alt:string;label?:string}){
+ return <figure className="cms-story-image"><img src={src} alt={alt}/>{label&&<figcaption>{label}</figcaption>}</figure>
 }
 
 function CaseVisual({theme,type,label}:{theme:string;type:"flow"|"wireframes"|"system";label:string}){

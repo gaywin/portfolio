@@ -25,9 +25,9 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
   </div>
 
   <article id="case-main" className="case-ref-content">
+   {study.pageSections?.length?<OrderedSections sections={study.pageSections} study={study}/>:<>
    <section className="page-width case-summary"><h2>{study.summaryHeading||'Summary'}</h2><div className="summary-grid"><div className="summary-main"><h3>{study.missionHeading||'Mission'}</h3><p>{study.mission||study.overview}</p><h3>{study.challengeHeading||'Challenge'}</h3><p>{study.challenge}</p><h3>{study.contributionHeading||'My contribution'}</h3><p>{study.contributionDescription||`${study.overview} ${study.strategy}`}</p></div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>
 
-   {study.pageSections?.length?<OrderedSections sections={study.pageSections} title={study.title}/>:<>
    {study.showImpact!==false&&<ImpactSection study={study}/>}
 
    <section className="page-width story-ref">
@@ -62,14 +62,15 @@ function ContentImage({src,alt,label}:{src:string;alt:string;label?:string}){
  return <figure className="cms-story-image"><img src={src} alt={alt}/>{label&&<figcaption>{label}</figcaption>}</figure>
 }
 
-function OrderedSections({sections,title}:{sections:PageSection[];title:string}){
+function OrderedSections({sections,study}:{sections:PageSection[];study:NonNullable<Awaited<ReturnType<typeof getCaseStudy>>>}){
  const visibleSections=sections.filter(section=>!section.hidden);
  return <div className="ordered-case-sections">{visibleSections.map((section,index)=>{
   const key=section._key||`${section._type}-${section.heading}-${index}`;
   if(section._type==='impactSection') return <ImpactBlock key={key} heading={section.heading||'Impact'} description={section.description} metrics={section.metrics||[]}/>;
+  if(section._type==='summarySection') return <section className="page-width case-summary ordered-summary" key={key}><h2>{section.heading||'Summary'}</h2><div className="summary-grid"><div className="summary-main">{section.items?.map((item,itemIndex)=><div className="summary-item" key={item._key||`${item.heading}-${itemIndex}`}>{item.heading&&<h3>{item.heading}</h3>}{item.description&&<p>{item.description}</p>}</div>)}</div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>;
   return <section className="ordered-regular page-width" key={key}>
    {(section.heading||section.description)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.description&&<p>{section.description}</p>}</div>}
-   {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${title} project image`}/>}
+   {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
   </section>;
  })}</div>;
 }

@@ -170,15 +170,19 @@ h1 em, h2 em { font-family:Georgia, 'Times New Roman', serif; font-weight:400; l
 .impact-ref{padding:120px 0 80px}
 .story-ref{padding-top:80px;padding-bottom:80px}
 .story-block,.case-visual-ref,.validation-board,.cms-story-image,.flexible-story{margin-bottom:80px}
-.ordered-case-sections{margin-top:120px;padding-bottom:80px}
+.ordered-case-sections{margin-top:0;padding-bottom:80px}
 .ordered-case-sections>section+section{margin-top:80px}
+.ordered-case-sections>.ordered-summary+.ordered-impact{margin-top:120px}
 .ordered-case-sections .ordered-impact{padding:80px 0}
+.ordered-summary{padding-bottom:0}
+.summary-item+.summary-item{margin-top:65px}
 .ordered-regular .flexible-story-copy{margin-bottom:40px}
 .ordered-regular .cms-story-image{margin-bottom:0}
 
 @media(max-width:800px){
  .case-summary{padding-bottom:0}
- .ordered-case-sections{margin-top:120px;padding-bottom:80px}
+ .ordered-case-sections{margin-top:0;padding-bottom:80px}
  .ordered-case-sections>section+section{margin-top:80px}
+ .ordered-case-sections>.ordered-summary+.ordered-impact{margin-top:120px}
  .story-block,.case-visual-ref,.validation-board,.cms-story-image,.flexible-story{margin-bottom:80px}
 }

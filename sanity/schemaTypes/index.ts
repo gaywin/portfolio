@@ -62,8 +62,18 @@ const caseStudy = defineType({
     defineField({name:'reflection', title:'Reflection', type:'text', rows:5}),
     defineField({
       name:'pageSections', title:'Case-study page sections', type:'array',
-      description:'Add, remove with the minus menu, and drag sections into the order you want. When this list is empty, the existing case-study layout is used.',
+      description:'Click a section to edit its heading and description. Drag sections to reorder them, or use the item menu to remove one. When empty, the legacy layout is used.',
       of:[
+        defineArrayMember({
+          type:'object', name:'summarySection', title:'Summary section',
+          initialValue:{heading:'Summary',items:[{_type:'summaryItem',_key:'mission',heading:'Mission',description:''},{_type:'summaryItem',_key:'challenge',heading:'Challenge',description:''},{_type:'summaryItem',_key:'contribution',heading:'My contribution',description:''}]},
+          fields:[
+            defineField({name:'hidden',title:'Hide this section',type:'boolean',initialValue:false}),
+            defineField({name:'heading',title:'Section heading',type:'string',initialValue:'Summary',validation:rule=>rule.required()}),
+            defineField({name:'items',title:'Editable summary items',type:'array',description:'Click Mission, Challenge or My contribution to edit its heading and description. Drag items to reorder them or use the item menu to remove one.',of:[defineArrayMember({type:'object',name:'summaryItem',title:'Summary item',fields:[defineField({name:'heading',title:'Heading',type:'string',validation:rule=>rule.required()}),defineField({name:'description',title:'Description',type:'text',rows:6})],preview:{select:{title:'heading',subtitle:'description'},prepare:({title,subtitle})=>({title:title||'Untitled summary item',subtitle})}})]}),
+          ],
+          preview:{select:{title:'heading',hidden:'hidden'},prepare:({title,hidden})=>({title:`${hidden?'Hidden — ':''}${title||'Summary'}`,subtitle:'Editable and reorderable summary content'})},
+        }),
         defineArrayMember({
           type:'object', name:'regularSection', title:'Regular section',
           initialValue:{heading:'New section'},

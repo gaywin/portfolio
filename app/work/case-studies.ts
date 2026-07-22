@@ -8,13 +8,14 @@ export type FlexibleSection = {
 }
 export type PageSection = {
   _key?: string
-  _type: 'regularSection' | 'impactSection'
+  _type: 'summarySection' | 'regularSection' | 'impactSection'
   hidden?: boolean
   heading?: string
   description?: string
   imageUrl?: string
   imageAlt?: string
   metrics?: ImpactMetric[]
+  items?: Array<{_key?:string; heading?:string; description?:string}>
 }
 
 export type CaseStudy = {

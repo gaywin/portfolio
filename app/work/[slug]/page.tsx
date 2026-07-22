@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { getCaseStudies, getCaseStudy } from "../../../sanity/content";
+import type { ImpactMetric, PageSection } from "../case-studies";
 
 export async function generateStaticParams(){return (await getCaseStudies()).map(({slug})=>({slug}));}
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const study=await getCaseStudy((await params).slug);return study?{title:`${study.title} — Gaywin Walters`,description:study.outcome}:{};}
@@ -17,15 +19,16 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
    <header className="ref-header page-width"><Link className="ref-logo" href="/">gaywin<span>.design</span></Link><nav aria-label="Case study navigation"><Link href="/#work">Work</Link><Link href="/resume">Résumé</Link><a href="mailto:hello@gaywinwalters.com">Contact</a></nav></header>
    <div className="page-width case-title"><p>{study.sector} · {study.year}</p><h1>{study.outcome}</h1></div>
   </div>
-  <div className={`page-width case-hero-ref${study.heroImageUrl?' has-cms-image':''}`} data-theme={study.theme} aria-label={`${study.title} product overview`}>
+  <div className={`page-width case-hero-ref${study.heroImageUrl?' has-cms-image':''}`} data-theme={study.theme} style={themeStyle(study.theme)} aria-label={`${study.title} product overview`}>
    {study.heroImageUrl?<img className="cms-case-image" src={study.heroImageUrl} alt={study.heroImageAlt||`${study.title} product interface`} />:<><div className="case-screen"><div className="screen-chrome"><i/><i/><i/><span>{study.title}</span></div><div className="screen-layout"><aside><b>GW</b><span/><span/><span/><span/></aside><div><small>{study.artLabel}</small><h2>{study.artStat}</h2><p>{study.overview}</p><div className="screen-panels"><i/><i/><i/></div></div></div></div>
    <div className="phone-screen"><span>{study.artLabel}</span><b>{study.artStat}</b><i/><i/><i/></div></>}
   </div>
 
   <article id="case-main" className="case-ref-content">
-   <section className="page-width case-summary"><h2>Summary</h2><div className="summary-grid"><div className="summary-main"><h3>Mission</h3><p>{study.mission||study.overview}</p><h3>Challenge</h3><p>{study.challenge}</p><h3>My contribution</h3><p>{study.overview} {study.strategy}</p></div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>
+   <section className="page-width case-summary"><h2>{study.summaryHeading||'Summary'}</h2><div className="summary-grid"><div className="summary-main"><h3>{study.missionHeading||'Mission'}</h3><p>{study.mission||study.overview}</p><h3>{study.challengeHeading||'Challenge'}</h3><p>{study.challenge}</p><h3>{study.contributionHeading||'My contribution'}</h3><p>{study.contributionDescription||`${study.overview} ${study.strategy}`}</p></div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>
 
-   <ImpactSection study={study}/>
+   {study.pageSections?.length?<OrderedSections sections={study.pageSections} title={study.title}/>:<>
+   {study.showImpact!==false&&<ImpactSection study={study}/>}
 
    <section className="page-width story-ref">
     <div className="story-block"><h2>Finding the right problem</h2><p className="story-lead">A complex product becomes tractable when the team shares a clear view of the customer’s real job.</p><div className="story-copy"><div><h3>Challenge</h3><p>{study.challenge}</p></div><div><h3>Customer insight</h3><p>{study.insight}</p></div></div></div>
@@ -35,13 +38,14 @@ export default async function CaseStudyPage({params}:{params:Promise<{slug:strin
     <div className="story-block split-story"><div><p className="ref-label">Design system</p><h2>Building for consistency and scale</h2></div><p>{study.system}</p></div>
     {study.designSystemImageUrl?<ContentImage src={study.designSystemImageUrl} alt={study.designSystemImageAlt||`${study.title} design system`} label="Reusable product system"/>:<CaseVisual theme={study.theme} type="system" label="Reusable product system" />}
     <div className="story-block split-story"><div><p className="ref-label">Validation</p><h2>Learning before committing</h2></div><p>{study.validation}</p></div>
-    {study.validationImageUrl?<ContentImage src={study.validationImageUrl} alt={study.validationImageAlt||`${study.title} validation process`} label="Learning before committing"/>:<div className="validation-board" data-theme={study.theme}><div><span>01</span><b>Frame</b></div><i>→</i><div><span>02</span><b>Prototype</b></div><i>→</i><div><span>03</span><b>Validate</b></div><i>→</i><div><span>04</span><b>Refine</b></div></div>}
+    {study.validationImageUrl?<ContentImage src={study.validationImageUrl} alt={study.validationImageAlt||`${study.title} validation process`} label="Learning before committing"/>:<div className="validation-board" data-theme={study.theme} style={themeStyle(study.theme)}><div><span>01</span><b>Frame</b></div><i>→</i><div><span>02</span><b>Prototype</b></div><i>→</i><div><span>03</span><b>Validate</b></div><i>→</i><div><span>04</span><b>Refine</b></div></div>}
     {study.contentSections?.map((section,index)=><section className="flexible-story" key={section._key||`${section.heading}-${index}`}>
       {(section.heading||section.text)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.text&&<p>{section.text}</p>}</div>}
       {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
     </section>)}
     <div className="story-block reflection"><p className="ref-label">Reflection</p><blockquote>“{study.reflection}”</blockquote></div>
    </section>
+   </>}
   </article>
 
   <section className="case-cta"><div className="page-width"><p className="ref-label">Have a complex product that needs clarity?</p><h2>Let’s make the next outcome matter.</h2><a className="blue-button" href="mailto:hello@gaywinwalters.com">Get in touch ↗</a></div></section>
@@ -58,10 +62,32 @@ function ContentImage({src,alt,label}:{src:string;alt:string;label?:string}){
  return <figure className="cms-story-image"><img src={src} alt={alt}/>{label&&<figcaption>{label}</figcaption>}</figure>
 }
 
+function OrderedSections({sections,title}:{sections:PageSection[];title:string}){
+ const visibleSections=sections.filter(section=>!section.hidden);
+ return <div className="ordered-case-sections">{visibleSections.map((section,index)=>{
+  const key=section._key||`${section._type}-${section.heading}-${index}`;
+  if(section._type==='impactSection') return <ImpactBlock key={key} heading={section.heading||'Impact'} description={section.description} metrics={section.metrics||[]}/>;
+  return <section className="ordered-regular page-width" key={key}>
+   {(section.heading||section.description)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.description&&<p>{section.description}</p>}</div>}
+   {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${title} project image`}/>}
+  </section>;
+ })}</div>;
+}
+
+function ImpactBlock({heading,description,metrics}:{heading:string;description?:string;metrics:ImpactMetric[]}){
+ return <section className="impact-ref ordered-impact"><div className="page-width"><div className="impact-intro"><h2>{heading}</h2>{description&&<p>{description}</p>}</div>{metrics.length>0&&<div className="impact-grid">{metrics.map((metric,index)=><div key={`${metric.value}-${index}`}><strong>{metric.value}</strong><span>{metric.label}</span></div>)}</div>}</div></section>;
+}
+
 function CaseVisual({theme,type,label}:{theme:string;type:"flow"|"wireframes"|"system";label:string}){
- return <figure className={`case-visual-ref ${type}`} data-theme={theme}><div className="visual-canvas">
+ return <figure className={`case-visual-ref ${type}`} data-theme={theme} style={themeStyle(theme)}><div className="visual-canvas">
   {type==="flow"?<><div className="flow-node"><small>01</small><b>Discover</b><span>Customer signal</span></div><i>→</i><div className="flow-node"><small>02</small><b>Define</b><span>Product direction</span></div><i>→</i><div className="flow-node"><small>03</small><b>Deliver</b><span>Scalable system</span></div></>:null}
   {type==="wireframes"?<><div className="wire phone"><i/><b/><span/><span/><span/></div><div className="wire desktop"><i/><b/><span/><span/><span/><span/></div><div className="wire phone alt"><i/><b/><span/><span/></div></>:null}
   {type==="system"?<><div className="token"><i/><b>Colour</b><span>Semantic tokens</span></div><div className="token"><strong>Aa</strong><b>Type</b><span>Clear hierarchy</span></div><div className="token components"><i/><i/><i/><b>Components</b><span>Reusable patterns</span></div></>:null}
  </div><figcaption>{label}</figcaption></figure>;
+}
+
+const legacyColours:Record<string,string>={lime:'#C8FF00',violet:'#6F4CFF',orange:'#FF5C35'};
+function themeStyle(theme:string):CSSProperties{
+ const colour=/^#[0-9a-f]{6}$/i.test(theme)?theme:(legacyColours[theme]||legacyColours.lime);
+ return {'--theme':colour,'--theme-ink':'#182018','--theme-soft':`color-mix(in srgb, ${colour} 22%, white)`} as CSSProperties;
 }

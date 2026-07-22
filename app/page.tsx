@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { getCaseStudies, getSiteSettings } from "../sanity/content";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
@@ -32,7 +33,7 @@ export default async function Home() {
         <div className="ref-projects">
           {caseStudies.map((study,index)=><Link className={`ref-project ${index % 2 ? "image-left" : ""}`} href={`/work/${study.slug}`} key={study.slug}>
             <div className="project-info"><h3>{study.outcome}</h3><p>{study.overview}</p><div className="card-result"><strong>{study.artStat}</strong><span>{study.results[0]}</span></div></div>
-            <div className="project-thumb" data-theme={study.theme}>{study.thumbnailUrl?<img className="cms-project-image" src={study.thumbnailUrl} alt={study.thumbnailAlt||`${study.title} product interface`} />:
+            <div className="project-thumb" data-theme={study.theme} style={themeStyle(study.theme)}>{study.thumbnailUrl?<img className="cms-project-image" src={study.thumbnailUrl} alt={study.thumbnailAlt||`${study.title} product interface`} />:
               <div className="thumb-window"><div className="thumb-bar"><i/><i/><i/></div><div className="thumb-body"><small>{study.artLabel}</small><b>{study.title}</b><span/><span className="short"/><em>{index===0?"LIVE":index===1?"PORTFOLIO":"REPORTING"}</em></div></div>
             }</div>
           </Link>)}
@@ -56,4 +57,10 @@ export default async function Home() {
     <section className="cta-ref dark-shell"><div className="page-width"><p className="ref-label">Let’s work together</p><h2>{settings.contactHeading}</h2><a className="blue-button" href={`mailto:${settings.contactEmail}`}>Get in touch <Arrow /></a></div></section>
     <footer className="ref-footer dark-shell"><div className="page-width"><Link className="ref-logo" href="/">gaywin<span>.design</span></Link><div><a href="#work">Work</a><a href="#services">Capabilities</a><Link href="/resume">Résumé</Link><a href="mailto:hello@gaywinwalters.com">Contact</a></div><p>Senior product designer · Cape Town<br/>© {new Date().getFullYear()} Gaywin Walters</p></div></footer>
   </main>;
+}
+
+const legacyColours:Record<string,string>={lime:'#C8FF00',violet:'#6F4CFF',orange:'#FF5C35'};
+function themeStyle(theme:string):CSSProperties{
+  const colour=/^#[0-9a-f]{6}$/i.test(theme)?theme:(legacyColours[theme]||legacyColours.lime);
+  return {'--theme':colour,'--theme-ink':'#182018','--theme-soft':`color-mix(in srgb, ${colour} 22%, white)`} as CSSProperties;
 }

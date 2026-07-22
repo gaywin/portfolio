@@ -6,6 +6,16 @@ export type FlexibleSection = {
   imageUrl?: string
   imageAlt?: string
 }
+export type PageSection = {
+  _key?: string
+  _type: 'regularSection' | 'impactSection'
+  hidden?: boolean
+  heading?: string
+  description?: string
+  imageUrl?: string
+  imageAlt?: string
+  metrics?: ImpactMetric[]
+}
 
 export type CaseStudy = {
   slug: string; title: string; sector: string; year: string; theme: string;
@@ -13,9 +23,13 @@ export type CaseStudy = {
   role: string; team: string; mission?: string; challenge: string; insight: string; strategy: string;
   decisions: string[]; system: string; validation: string; results: string[]; reflection: string;
   impactHeading?: string; impactDescription?: string; impactMetrics?: ImpactMetric[];
+  showImpact?: boolean;
+  summaryHeading?: string; missionHeading?: string; challengeHeading?: string;
+  contributionHeading?: string; contributionDescription?: string;
   designSystemImageUrl?: string; designSystemImageAlt?: string;
   validationImageUrl?: string; validationImageAlt?: string;
   contentSections?: FlexibleSection[];
+  pageSections?: PageSection[];
 };
 
 export const caseStudies: CaseStudy[] = [

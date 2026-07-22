@@ -23,7 +23,7 @@ export async function getSiteSettings(){
 type CmsCase = CaseStudy & {thumbnail?:unknown;heroImage?:unknown;designSystemImage?:unknown;validationImage?:unknown;thumbnailUrl?:string;heroImageUrl?:string;thumbnailAlt?:string;heroImageAlt?:string}
 export async function getCaseStudies():Promise<CmsCase[]>{
   try {
-    const items=await client.fetch<CmsCase[]>(`*[_type == "caseStudy"]|order(order asc){...,"slug":slug.current,"thumbnailAlt":thumbnail.alt,"heroImageAlt":heroImage.alt,"designSystemImageAlt":designSystemImage.alt,"validationImageAlt":validationImage.alt,"contentSections":contentSections[]{...,"imageAlt":image.alt}}`)
+    const items=await client.fetch<CmsCase[]>(`*[_type == "caseStudy"]|order(order asc){...,"slug":slug.current,"thumbnailAlt":thumbnail.alt,"heroImageAlt":heroImage.alt,"designSystemImageAlt":designSystemImage.alt,"validationImageAlt":validationImage.alt,"contentSections":contentSections[]{...,"imageAlt":image.alt},"pageSections":pageSections[]{...,"imageAlt":image.alt}}`)
     if(!items?.length) return fallbackCaseStudies
     return items.map(item=>({...item,
       thumbnailUrl:item.thumbnail?urlFor(item.thumbnail).width(1400).height(900).fit('crop').url():undefined,
@@ -31,6 +31,7 @@ export async function getCaseStudies():Promise<CmsCase[]>{
       designSystemImageUrl:item.designSystemImage?urlFor(item.designSystemImage).width(1800).fit('max').url():undefined,
       validationImageUrl:item.validationImage?urlFor(item.validationImage).width(1800).fit('max').url():undefined,
       contentSections:item.contentSections?.map(section=>({...section,imageUrl:(section as typeof section & {image?:unknown}).image?urlFor((section as typeof section & {image?:unknown}).image).width(1800).fit('max').url():undefined}))
+      ,pageSections:item.pageSections?.map(section=>({...section,imageUrl:(section as typeof section & {image?:unknown}).image?urlFor((section as typeof section & {image?:unknown}).image as never).width(1800).fit('max').url():undefined}))
     }))
   } catch { return fallbackCaseStudies }
 }

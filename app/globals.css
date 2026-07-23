@@ -178,6 +178,7 @@ h1 em, h2 em { font-family:Georgia, 'Times New Roman', serif; font-weight:400; l
 .summary-item+.summary-item{margin-top:65px}
 .ordered-regular .flexible-story-copy{margin-bottom:40px}
 .ordered-regular .cms-story-image{margin-bottom:0}
+.cms-section-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.cms-section-gallery.is-single{grid-template-columns:1fr}.cms-section-gallery .cms-story-image{margin:0}.cms-section-gallery img{height:100%;object-fit:cover}
 
 @media(max-width:800px){
  .case-summary{padding-bottom:0}
@@ -186,3 +187,4 @@ h1 em, h2 em { font-family:Georgia, 'Times New Roman', serif; font-weight:400; l
  .ordered-case-sections>.ordered-summary+.ordered-impact{margin-top:120px}
  .story-block,.case-visual-ref,.validation-board,.cms-story-image,.flexible-story{margin-bottom:80px}
 }
+@media(max-width:700px){.cms-section-gallery{grid-template-columns:1fr}}

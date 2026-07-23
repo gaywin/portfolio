@@ -66,20 +66,23 @@ const caseStudy = defineType({
       of:[
         defineArrayMember({
           type:'object', name:'summarySection', title:'Summary section',
-          initialValue:{heading:'Summary',items:[{_type:'summaryItem',_key:'mission',heading:'Mission',description:''},{_type:'summaryItem',_key:'challenge',heading:'Challenge',description:''},{_type:'summaryItem',_key:'contribution',heading:'My contribution',description:''}]},
+          initialValue:{heading:'Summary',headingLevel:'h2',items:[{_type:'summaryItem',_key:'mission',heading:'Mission',headingLevel:'h3',description:''},{_type:'summaryItem',_key:'challenge',heading:'Challenge',headingLevel:'h3',description:''},{_type:'summaryItem',_key:'contribution',heading:'My contribution',headingLevel:'h3',description:''}],sidebarItems:[{_type:'sidebarItem',_key:'project',heading:'Project',headingLevel:'h3',description:''},{_type:'sidebarItem',_key:'role-team',heading:'Role & team',headingLevel:'h3',description:''},{_type:'sidebarItem',_key:'focus',heading:'Focus',headingLevel:'h3',description:''}]},
           fields:[
             defineField({name:'hidden',title:'Hide this section',type:'boolean',initialValue:false}),
             defineField({name:'heading',title:'Section heading',type:'string',initialValue:'Summary',validation:rule=>rule.required()}),
-            defineField({name:'items',title:'Summary content',type:'array',description:'Mission, Challenge and My contribution are ordinary editable items. Click to edit, drag to reorder, or remove and add any heading you need.',of:[defineArrayMember({type:'object',name:'summaryItem',title:'Heading and description',initialValue:{heading:'New heading'},fields:[defineField({name:'heading',title:'Heading',type:'string',validation:rule=>rule.required()}),defineField({name:'description',title:'Description',type:'text',rows:6})],preview:{select:{title:'heading',subtitle:'description'},prepare:({title,subtitle})=>({title:title||'Untitled heading',subtitle})}})]}),
+            defineField({name:'headingLevel',title:'Summary heading size',type:'string',initialValue:'h2',options:{list:[{title:'H2 — main heading',value:'h2'},{title:'H3 — subheading',value:'h3'}],layout:'dropdown'}}),
+            defineField({name:'items',title:'Left-column content',type:'array',description:'Click an item to edit its heading, heading size and description. Drag to reorder or remove it.',of:[defineArrayMember({type:'object',name:'summaryItem',title:'Heading and description',initialValue:{heading:'New heading',headingLevel:'h3'},fields:[defineField({name:'heading',title:'Heading',type:'string',validation:rule=>rule.required()}),defineField({name:'headingLevel',title:'Heading size',type:'string',initialValue:'h3',options:{list:[{title:'H3 — standard',value:'h3'},{title:'H2 — main heading',value:'h2'}],layout:'dropdown'}}),defineField({name:'description',title:'Description',type:'text',rows:6})],preview:{select:{title:'heading',subtitle:'description',level:'headingLevel'},prepare:({title,subtitle,level})=>({title:title||'Untitled heading',subtitle:`${(level||'h3').toUpperCase()} · ${subtitle||''}`})}})]}),
+            defineField({name:'sidebarItems',title:'Right-column content',type:'array',description:'Project, Role & team and Focus are fully editable. Click, drag, add or remove them just like the left column.',of:[defineArrayMember({type:'object',name:'sidebarItem',title:'Right-column item',initialValue:{heading:'New heading',headingLevel:'h3'},fields:[defineField({name:'heading',title:'Heading',type:'string',validation:rule=>rule.required()}),defineField({name:'headingLevel',title:'Heading size',type:'string',initialValue:'h3',options:{list:[{title:'H3 — standard',value:'h3'},{title:'H2 — main heading',value:'h2'}],layout:'dropdown'}}),defineField({name:'description',title:'Description',type:'text',rows:5})],preview:{select:{title:'heading',subtitle:'description',level:'headingLevel'},prepare:({title,subtitle,level})=>({title:title||'Untitled right-column item',subtitle:`${(level||'h3').toUpperCase()} · ${subtitle||''}`})}})]}),
           ],
           preview:{select:{title:'heading',hidden:'hidden'},prepare:({title,hidden})=>({title:`${hidden?'Hidden — ':''}${title||'Summary'}`,subtitle:'Editable and reorderable summary content'})},
         }),
         defineArrayMember({
           type:'object', name:'regularSection', title:'Heading, text and images',
-          initialValue:{heading:'New section'},
+          initialValue:{heading:'New section',headingLevel:'h3'},
           fields:[
             defineField({name:'hidden',title:'Hide this section',type:'boolean',initialValue:false}),
             defineField({name:'heading',title:'Heading',type:'string',validation:rule=>rule.required()}),
+            defineField({name:'headingLevel',title:'Heading size',type:'string',initialValue:'h3',description:'H3 is standard. Choose H2 to start a new main group; following H3 sections will sit closer beneath it.',options:{list:[{title:'H3 — standard',value:'h3'},{title:'H2 — main heading',value:'h2'}],layout:'dropdown'}}),
             defineField({name:'description',title:'Description',type:'text',rows:7}),
             defineField({name:'images',title:'Images',type:'array',description:'Add, remove and reorder as many images as this section needs.',of:[defineArrayMember({type:'image',options:{hotspot:true},fields:[defineField({name:'alt',title:'Alternative text',type:'string'})]})]}),
             defineField({name:'image',title:'Legacy image',type:'image',hidden:true,options:{hotspot:true}}),
@@ -88,10 +91,11 @@ const caseStudy = defineType({
         }),
         defineArrayMember({
           type:'object', name:'impactSection', title:'Impact section',
-          initialValue:{heading:'Impact',hidden:false},
+          initialValue:{heading:'Impact',headingLevel:'h2',hidden:false},
           fields:[
             defineField({name:'hidden',title:'Hide Impact section',type:'boolean',initialValue:false}),
             defineField({name:'heading',title:'Heading',type:'string',initialValue:'Impact',validation:rule=>rule.required()}),
+            defineField({name:'headingLevel',title:'Heading size',type:'string',initialValue:'h2',options:{list:[{title:'H2 — main heading',value:'h2'},{title:'H3 — subheading',value:'h3'}],layout:'dropdown'}}),
             defineField({name:'description',title:'Description',type:'text',rows:5}),
             defineField({name:'metrics',title:'Metrics',type:'array',of:[defineArrayMember({type:'object',name:'sectionMetric',title:'Metric',fields:[defineField({name:'value',title:'Metric value',type:'string',validation:rule=>rule.required()}),defineField({name:'label',title:'Metric description',type:'text',rows:2,validation:rule=>rule.required()})],preview:{select:{title:'value',subtitle:'label'}}})]}),
           ],

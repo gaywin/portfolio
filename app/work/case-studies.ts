@@ -12,11 +12,13 @@ export type PageSection = {
   _type: 'summarySection' | 'regularSection' | 'impactSection'
   hidden?: boolean
   heading?: string
+  headingLevel?: 'h2' | 'h3'
   description?: string
   imageUrl?: string
   imageAlt?: string
   metrics?: ImpactMetric[]
-  items?: Array<{_key?:string; heading?:string; description?:string}>
+  items?: Array<{_key?:string; heading?:string; headingLevel?:'h2'|'h3'; description?:string}>
+  sidebarItems?: Array<{_key?:string; heading?:string; headingLevel?:'h2'|'h3'; description?:string}>
 }
 
 export type CaseStudy = {

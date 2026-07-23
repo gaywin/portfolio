@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { getCaseStudies, getCaseStudy } from "../../../sanity/content";
 import type { ImpactMetric, PageSection } from "../case-studies";
 
@@ -62,21 +62,28 @@ function ContentImage({src,alt,label}:{src:string;alt:string;label?:string}){
  return <figure className="cms-story-image"><img src={src} alt={alt}/>{label&&<figcaption>{label}</figcaption>}</figure>
 }
 
+function CmsHeading({level='h3',children}:{level?:'h2'|'h3';children:ReactNode}){
+ return level==='h2'?<h2>{children}</h2>:<h3>{children}</h3>;
+}
+
 function OrderedSections({sections,study}:{sections:PageSection[];study:NonNullable<Awaited<ReturnType<typeof getCaseStudy>>>}){
  const visibleSections=sections.filter(section=>!section.hidden);
  return <div className="ordered-case-sections">{visibleSections.map((section,index)=>{
   const key=section._key||`${section._type}-${section.heading}-${index}`;
-  if(section._type==='impactSection') return <ImpactBlock key={key} heading={section.heading||'Impact'} description={section.description} metrics={section.metrics||[]}/>;
-  if(section._type==='summarySection') return <section className="page-width case-summary ordered-summary" key={key}><h2>{section.heading||'Summary'}</h2><div className="summary-grid"><div className="summary-main">{section.items?.map((item,itemIndex)=><div className="summary-item" key={item._key||`${item.heading}-${itemIndex}`}>{item.heading&&<h3>{item.heading}</h3>}{item.description&&<p>{item.description}</p>}</div>)}</div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>;
-  return <section className="ordered-regular page-width" key={key}>
-   {(section.heading||section.description)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.description&&<p>{section.description}</p>}</div>}
+  if(section._type==='impactSection') return <ImpactBlock key={key} heading={section.heading||'Impact'} headingLevel={section.headingLevel||'h2'} description={section.description} metrics={section.metrics||[]}/>;
+  if(section._type==='summarySection') return <section className="page-width case-summary ordered-summary" key={key}><CmsHeading level={section.headingLevel||'h2'}>{section.heading||'Summary'}</CmsHeading><div className="summary-grid"><div className="summary-main">{section.items?.map((item,itemIndex)=><div className={`summary-item heading-${item.headingLevel||'h3'}`} key={item._key||`${item.heading}-${itemIndex}`}>{item.heading&&<CmsHeading level={item.headingLevel||'h3'}>{item.heading}</CmsHeading>}{item.description&&<p>{item.description}</p>}</div>)}</div><aside>{(section.sidebarItems?.length?section.sidebarItems:[{_key:'project',heading:'Project',description:`${study.title}\n${study.sector}\n${study.year}`},{_key:'role-team',heading:'Role & team',description:`${study.role}\n${study.team}`},{_key:'focus',heading:'Focus',description:'Product strategy\nExperience design\nDesign systems\nValidation'}]).map((item,itemIndex)=><div className={`summary-sidebar-item heading-${item.headingLevel||'h3'}`} key={item._key||`${item.heading}-${itemIndex}`}>{item.heading&&<CmsHeading level={item.headingLevel||'h3'}>{item.heading}</CmsHeading>}{item.description&&<p>{item.description}</p>}</div>)}</aside></div></section>;
+  const level=section.headingLevel||'h3';
+  const previous=visibleSections[index-1];
+  const followsH2=level==='h3'&&previous?.headingLevel==='h2';
+  return <section className={`ordered-regular page-width heading-${level}${followsH2?' follows-h2':''}`} key={key}>
+   {(section.heading||section.description)&&<div className="flexible-story-copy">{section.heading&&<CmsHeading level={level}>{section.heading}</CmsHeading>}{section.description&&<p>{section.description}</p>}</div>}
    {section.images?.length?<div className={`cms-section-gallery${section.images.length===1?' is-single':''}`}>{section.images.map((image,imageIndex)=>image.imageUrl&&<ContentImage key={image._key||imageIndex} src={image.imageUrl} alt={image.imageAlt||section.heading||`${study.title} project image`}/>)}</div>:section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
   </section>;
  })}</div>;
 }
 
-function ImpactBlock({heading,description,metrics}:{heading:string;description?:string;metrics:ImpactMetric[]}){
- return <section className="impact-ref ordered-impact"><div className="page-width"><div className="impact-intro"><h2>{heading}</h2>{description&&<p>{description}</p>}</div>{metrics.length>0&&<div className="impact-grid">{metrics.map((metric,index)=><div key={`${metric.value}-${index}`}><strong>{metric.value}</strong><span>{metric.label}</span></div>)}</div>}</div></section>;
+function ImpactBlock({heading,headingLevel,description,metrics}:{heading:string;headingLevel:'h2'|'h3';description?:string;metrics:ImpactMetric[]}){
+ return <section className="impact-ref ordered-impact"><div className="page-width"><div className="impact-intro"><CmsHeading level={headingLevel}>{heading}</CmsHeading>{description&&<p>{description}</p>}</div>{metrics.length>0&&<div className="impact-grid">{metrics.map((metric,index)=><div key={`${metric.value}-${index}`}><strong>{metric.value}</strong><span>{metric.label}</span></div>)}</div>}</div></section>;
 }
 
 function CaseVisual({theme,type,label}:{theme:string;type:"flow"|"wireframes"|"system";label:string}){

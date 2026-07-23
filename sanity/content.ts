@@ -33,7 +33,7 @@ export async function getCaseStudies():Promise<CmsCase[]>{
       contentSections:item.contentSections?.map(section=>({...section,imageUrl:(section as typeof section & {image?:unknown}).image?urlFor((section as typeof section & {image?:unknown}).image).width(1800).fit('max').url():undefined}))
       ,pageSections:item.pageSections?.map(section=>({...section,
         imageUrl:(section as typeof section & {image?:unknown}).image?urlFor((section as typeof section & {image?:unknown}).image as never).width(1800).fit('max').url():undefined,
-        images:(section.images||[]).map(image=>({...image,imageUrl:urlFor(image as never).width(1800).fit('max').url()})),
+        images:(section.images||[]).flatMap(image=>(image as typeof image & {asset?:unknown}).asset?[{...image,imageUrl:urlFor(image as never).width(1800).fit('max').url()}]:[]),
       }))
     }))
   } catch { return fallbackCaseStudies }

@@ -70,7 +70,7 @@ function OrderedSections({sections,study}:{sections:PageSection[];study:NonNulla
   if(section._type==='summarySection') return <section className="page-width case-summary ordered-summary" key={key}><h2>{section.heading||'Summary'}</h2><div className="summary-grid"><div className="summary-main">{section.items?.map((item,itemIndex)=><div className="summary-item" key={item._key||`${item.heading}-${itemIndex}`}>{item.heading&&<h3>{item.heading}</h3>}{item.description&&<p>{item.description}</p>}</div>)}</div><aside><h3>Project</h3><p>{study.title}<br/>{study.sector}<br/>{study.year}</p><h3>Role & team</h3><p><strong>{study.role}</strong><br/>{study.team}</p><h3>Focus</h3><ul><li>Product strategy</li><li>Experience design</li><li>Design systems</li><li>Validation</li></ul></aside></div></section>;
   return <section className="ordered-regular page-width" key={key}>
    {(section.heading||section.description)&&<div className="flexible-story-copy">{section.heading&&<h2>{section.heading}</h2>}{section.description&&<p>{section.description}</p>}</div>}
-   {section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
+   {section.images?.length?<div className={`cms-section-gallery${section.images.length===1?' is-single':''}`}>{section.images.map((image,imageIndex)=>image.imageUrl&&<ContentImage key={image._key||imageIndex} src={image.imageUrl} alt={image.imageAlt||section.heading||`${study.title} project image`}/>)}</div>:section.imageUrl&&<ContentImage src={section.imageUrl} alt={section.imageAlt||section.heading||`${study.title} project image`}/>}
   </section>;
  })}</div>;
 }

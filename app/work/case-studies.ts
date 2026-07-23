@@ -5,6 +5,7 @@ export type FlexibleSection = {
   text?: string
   imageUrl?: string
   imageAlt?: string
+  images?: Array<{_key?:string; imageUrl?:string; imageAlt?:string}>
 }
 export type PageSection = {
   _key?: string
